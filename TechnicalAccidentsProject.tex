@@ -1,0 +1,123 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\usepackage{tikz}
+\usepackage{colortbl}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+
+\pgfplotstableset{
+    /color cells/min/.initial=0,
+    /color cells/max/.initial=1000,
+    /color cells/textcolor/.initial=,
+    %
+    % Usage: 'color cells={min=<value which is mapped to lowest color>, 
+    %   max = <value which is mapped to largest>}
+    color cells/.code={%
+        \pgfqkeys{/color cells}{#1}%
+        \pgfkeysalso{%
+            postproc cell content/.code={%
+                %
+                \begingroup
+                %
+                % acquire the value before any number printer changed
+                % it:
+                \pgfkeysgetvalue{/pgfplots/table/@preprocessed cell content}\value
+\ifx\value\empty
+\endgroup
+\else
+                \pgfmathfloatparsenumber{\value}%
+                \pgfmathfloattofixed{\pgfmathresult}%
+                \let\value=\pgfmathresult
+                %
+                % map that value:
+                \pgfplotscolormapaccess
+                    [\pgfkeysvalueof{/color cells/min}:\pgfkeysvalueof{/color cells/max}]%
+                    {\value}%
+                    {\pgfkeysvalueof{/pgfplots/colormap name}}%
+                % now, \pgfmathresult contains {<R>,<G>,<B>}
+                % 
+                % acquire the value AFTER any preprocessor or
+                % typesetter (like number printer) worked on it:
+                \pgfkeysgetvalue{/pgfplots/table/@cell content}\typesetvalue
+                \pgfkeysgetvalue{/color cells/textcolor}\textcolorvalue
+                %
+                % tex-expansion control
+                % see http://tex.stackexchange.com/questions/12668/where-do-i-start-latex-programming/27589#27589
+                \toks0=\expandafter{\typesetvalue}%
+                \xdef\temp{%
+                    \noexpand\pgfkeysalso{%
+                        @cell content={%
+                            \noexpand\cellcolor[rgb]{\pgfmathresult}%
+                            \noexpand\definecolor{mapped color}{rgb}{\pgfmathresult}%
+                            \ifx\textcolorvalue\empty
+                            \else
+                                \noexpand\color{\textcolorvalue}%
+                            \fi
+                            \the\toks0 %
+                        }%
+                    }%
+                }%
+                \endgroup
+                \temp
+\fi
+            }%
+        }%
+    }
+}
+
+
+\title{Types of technical accidents}
+\author{Emmett Krupczak}
+\date{2018 Jun 5}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+\section{Motivation}
+Technical accidents usually result from a combination of user error and gear failure. Occasionally accidents result from poor environmental conditions and other unforeseen incidents. 
+
+How much of this can be prevented? Let's assume for the moment that all accident causes can be grouped into one or more of the following three categories:
+\begin{itemize}
+\item \textbf{User error}\\
+This includes mistakes, unfamiliarity, improper use, and failure to respond appropriately to emergencies. 
+\item \textbf{Gear or situational failure} \\
+This is broadly interpreted to include any problem with the gear or situation. Gear failure is any problem with the equipment that could have theoretically have been prevented by perfect use, maintenance, and/or structural integrity of the components. Situational failure is any problem with the planning that could have been prevented by prudence or more careful examination of or response to changing environmental conditions; e.g. a long spot in skydiving is a situational failure. It does NOT include the unforeseeable; that falls under ``poor conditions''. 
+
+\item \textbf{Poor conditions} \\
+This includes any problems due to weather or platform that are beyond the control of the user; eg. a plane crash causing a skydiving fatality is considered an ``environmental problem'' because it is beyond the skydiver's control.
+\end{itemize}
+
+The chance of a fatal accident is given by the integral over the product of the chance of a given magnitude of a gear failure times a sufficient magnitude of user error to cause a fatality. For example: even a very minor gear failure can result in a fatality given sufficiently poor user response, while a major gear failure can result in a fatality despite perfect user response. 
+To this we add a constant representing the chance of a `poor conditions' incident.
+
+$$p_\text{fatality} = \int_\text{fatality line} p_\text{user error}\cdot p_\text{gear failure}$$
+
+Let's do a toy version of this model. Imagine that we divide all errors into three categories: minor, medium, or major, and all failures (gear and situational) into the same three categories. Then imagine that we have the following fatality matrix, where 1 (green) denotes survivability and 0 (red) denotes a fatality or near-fatality. 
+
+\begin{center}
+\vrule\pgfplotstabletypeset[%
+     color cells={min=0,max=1,textcolor=black},
+     /pgfplots/colormap={orangewhiteorange}{rgb255=(255,0,0) color=(red) rgb255=(0,170,0)},
+    /pgf/number format/fixed,
+    /pgf/number format/precision=3,
+    col sep=comma,
+    columns/Outcome/.style={reset styles,string type}%
+]{%%%%%%%
+Outcome,Minor error,Medium error , Major error
+Minor failure, 1, 1, 0
+Medium failure, 1, 0, 0
+Major failure, 0, 0, 0
+}\vrule
+
+\end{center}
+My hypothesis is that there will be a line 
+
+
+\end{document}  
