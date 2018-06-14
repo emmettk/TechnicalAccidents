@@ -117,7 +117,14 @@ Major failure, 0, 0, 0
 }\vrule
 
 \end{center}
-My hypothesis is that there will be a line 
+My hypothesis is that there will be some function, $f(x)$, that describes the combination of human error and gear/situational failure that results in a fatality.
+
+From this we can estimate a probability of death. Let the human error on a given jump/dive/etc be drawn from the distribution $F$ and the gear or situational failure be drawn from the distribution $G$. Let $x$ be the magnitude of the gear/situational failure and $f(x)$ be the fatality line.
+
+$$p_\text{fatality by accident} =\int_{-\infty}^\infty G(x)(1-F(f(x)))dx$$
+
+Taking into account the probability also of an unavoidable death, $p_\text{unavoidable fatality}$, we get the probability of death as being:
+$$p_\text{death} = 1 - (1 - p_\text{fatality by accident})(1-p_\text{unavoidable fatality})$$
 
 
 \end{document}  
