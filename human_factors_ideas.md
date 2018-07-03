@@ -1,3 +1,0 @@
-# Human-Factors Project Ideas
-
-
