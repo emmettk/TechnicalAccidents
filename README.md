@@ -1,5 +1,5 @@
 # Technical Accidents
-A project analyzing fatalities in technical sports (eg. skydiving)
+A project analyzing fatalities in technical sports, currently focused on skydiving.
 
 All scores from 0-10; 10 is worst. 
 * Human Error Score: How suboptimally did the human respond to the situation? (eg. failing to cut away)
