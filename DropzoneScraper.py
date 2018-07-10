@@ -91,16 +91,16 @@ def get_fatality(url):
 if __name__ == "__main__":
     fatality_database = pd.DataFrame()
     url_base= 'http://www.dropzone.com/fatalities/Detailed/'
-    for casenumber in range(1, 1000):
+    for casenumber in range(992, 1000):
         url = url_base+str(casenumber)+'.shtml'
         try:
             data = get_fatality(url)
+            if data != None:
+                print(casenumber)
+                data['CaseNumber'] = casenumber
+                fatality_database = fatality_database.append(pd.DataFrame(data, index = [casenumber]))
         except IndexError: print('Problem with scraping', url)
-        if data != None:
-            print(casenumber)
-            data['CaseNumber'] = casenumber
-            fatality_database = fatality_database.append(pd.DataFrame(data, index = [casenumber]))
-    fatality_database.to_csv('SkydivingFatalities2004to2017.csv')
+#    fatality_database.to_csv('SkydivingFatalities2004to2017.csv')
         
     
     
