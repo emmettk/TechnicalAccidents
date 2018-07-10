@@ -93,8 +93,11 @@ if __name__ == "__main__":
     url_base= 'http://www.dropzone.com/fatalities/Detailed/'
     for casenumber in range(1, 1000):
         url = url_base+str(casenumber)+'.shtml'
-        data = get_fatality(url)
+        try:
+            data = get_fatality(url)
+        except IndexError: print('Problem with scraping', url)
         if data != None:
+            print(casenumber)
             data['CaseNumber'] = casenumber
             fatality_database = fatality_database.append(pd.DataFrame(data, index = [casenumber]))
     fatality_database.to_csv('SkydivingFatalities2004to2017.csv')
